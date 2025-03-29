@@ -1,0 +1,165 @@
+Movie Ticket Booking System – Project Report
+
+1. Introduction
+The Movie Ticket Booking System is an online tool where users can find movies, pick showtimes, select seats, and pay—all in one place. This system makes ticket booking easier, replacing the old manual process with an automated, real-time solution that works for both moviegoers and theater staff.
+
+To manage its data, the system uses SQL. It has clear connections between different data points, which helps in getting information quickly, avoids double bookings, and keeps seat availability updated in real time.
+
+2. Objectives
+The main goals of this project are:
+✅ To build a clear and organized database for movie ticket bookings.
+✅ To create a Logical & Physical ER Diagram to show how data flows.
+✅ To use SQL queries for handling users, movies, shows, seats, and payments.
+✅ To keep seat availability updated to stop double bookings.
+✅ To include safe payment options for easy transactions.
+✅ To provide an Admin Panel for managing the theater.
+
+3. System Requirements
+3.1 Hardware Requirements:
+- Processor: Intel Core i3 or better
+- RAM: At least 4GB (8GB is better for smooth operations)
+- Storage: 10GB of free space for the database
+
+3.2 Software Requirements:
+- Database: MySQL / PostgreSQL
+- Backend: Java / Python / PHP
+- Frontend: HTML, CSS, JavaScript
+- Tools: Visual Studio Code, MySQL Workbench
+- Web Server: Apache Tomcat / XAMPP (for local testing)
+
+4. System Design
+4.1 ER Diagram (Logical Design)
+The Logical ER Diagram shows how different entities relate to each other before any actual coding happens. The key entities are:
+
+- Customers: Users who sign up and book tickets.
+- Movies: Holds details like title, genre, and duration.
+- Theatres: Represents different cinema locations.
+- Shows: Manages the schedules for movies.
+- Seats: Tracks seat availability for each show.
+- Tickets: Links customers to a specific seat for a show.
+- Payments: Records details of ticket transactions.
+
+Relationships:
+- A customer can book several tickets.
+- A movie can be shown at different times in various theaters.
+- A show has many seats, but each ticket corresponds to just one seat.
+- Payments are tied to ticket purchases.
+
+4.2 Schema Design (Physical Design)
+The Physical ER Diagram turns the Logical ER Diagram into actual SQL tables with keys and constraints. Here are the 7 tables we set up:
+
+1. Customers Table
+```sql
+CREATE TABLE Customers (
+    customer_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    email VARCHAR(100) UNIQUE,
+    phone VARCHAR(15),
+    password VARCHAR(255)
+);
+```
+2. Movies Table
+```sql
+CREATE TABLE Movies (
+    movie_id INT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(150),
+    genre VARCHAR(50),
+    duration INT
+);
+```
+3. Theatres Table
+```sql
+CREATE TABLE Theatres (
+    theatre_id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100),
+    location VARCHAR(255)
+);
+```
+4. Shows Table
+```sql
+CREATE TABLE Shows (
+    show_id INT PRIMARY KEY AUTO_INCREMENT,
+    movie_id INT,
+    theatre_id INT,
+    show_time DATETIME,
+    FOREIGN KEY (movie_id) REFERENCES Movies(movie_id),
+    FOREIGN KEY (theatre_id) REFERENCES Theatres(theatre_id)
+);
+```
+5. Seats Table
+```sql
+CREATE TABLE Seats (
+    seat_id INT PRIMARY KEY AUTO_INCREMENT,
+    show_id INT,
+    seat_number VARCHAR(10),
+    is_booked BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (show_id) REFERENCES Shows(show_id)
+);
+```
+6. Tickets Table
+```sql
+CREATE TABLE Tickets (
+    ticket_id INT PRIMARY KEY AUTO_INCREMENT,
+    customer_id INT,
+    seat_id INT,
+    show_id INT,
+    booking_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id),
+    FOREIGN KEY (seat_id) REFERENCES Seats(seat_id),
+    FOREIGN KEY (show_id) REFERENCES Shows(show_id)
+);
+```
+7. Payments Table
+```sql
+CREATE TABLE Payments (
+    payment_id INT PRIMARY KEY AUTO_INCREMENT,
+    ticket_id INT,
+    amount DECIMAL(10,2),
+    payment_status ENUM('Pending', 'Completed', 'Failed'),
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (ticket_id) REFERENCES Tickets(ticket_id)
+);
+```
+This structure helps keep data organized and relationships intact, making the booking process easy and secure.
+
+5. Implementation
+The project was carried out in several steps:
+1️⃣ Database Creation: Tables were built using SQL and optimized for better performance.
+2️⃣ Backend Development: APIs were established for user logins, seat booking, and payments.
+3️⃣ Frontend UI: A responsive website was created using HTML, CSS, and JavaScript.
+4️⃣ Testing & Optimization: The system was checked for data accuracy and speed.
+
+6. Features and Functionalities
+This system includes several key features:
+
+✅ User Authentication – Safe login and registration.
+✅ Movie Listings – Shows movies, times, and locations.
+✅ Seat Selection – Users can pick their favorite seats before booking.
+✅ Real-time Seat Updates – Stops double bookings.
+✅ Payment Processing – Secure transactions with various payment options.
+✅ Admin Panel – Efficient movie, theater, and booking management.
+
+7. Results and Screenshots
+System Testing Results:
+✔️ Successfully stored and accessed user and booking information.
+✔️ Database queries fine-tuned for quick performance.
+✔️ Seats refresh in real-time to avoid double bookings.
+✔️ Successful payment transactions saved in the database.
+
+(Screenshots of the user interface, booking steps, and database queries can be added here.)
+
+8. Conclusion and Future Scope
+Conclusion
+The Movie Ticket Booking System effectively automates the process of reserving movie tickets. With a solid database and secure payment methods, it provides a smooth experience for both users and theater management.
+
+Future Scope
+🔹 Mobile app development for Android and iOS.
+🔹 AI-based movie suggestions for tailored experiences.
+🔹 Options for food ordering during the movie.
+🔹 Blockchain for ticket validation to reduce fraud.
+
+9. References
+Silberschatz, Korth – Database System Concepts
+MySQL Documentation – SQL Query Optimization
+Web API Development – RESTful Services
+Online Payment Integration – Razorpay, PayPal API Docs
